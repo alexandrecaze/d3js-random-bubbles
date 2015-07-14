@@ -8,9 +8,21 @@
     // Function that changes the number of circles
     function changeCircleNumber() {
       var Nc = prompt("Enter a new number of circles")
-      document.getElementById("svg1").remove();
-      document.getElementById("center1").remove();
       drawCircles(Nc);
+    }
+    function assignCircleProps(ref){
+      ref.attr(
+        "cx",function(d,i){
+          return(d.cx);
+        })
+        .attr(
+          "cy",function(d,i){
+            return(d.cy);
+          })
+          .attr(
+            "r",function(d,i){
+              return(d.r);
+          });
     }
     // Function that  draws the circles
     function drawCircles(Nc){
@@ -18,9 +30,7 @@
       w=500; // Width
       h=500;  // Height
       avr=Math.sqrt(w*h/(Math.PI*Nc)); // Average radius if the whole surface is covered
-      var r=[]; // Array of radii
-      var cx=[]; // Array of x-coord for circle centers
-      var cy=[]; // Array of y-coord
+      var props = [];
       // Loop on the circles
       var i=0;
       while (i<Nc){
@@ -33,50 +43,48 @@
         var j=0;
         var overlap=false;
         while (j<i){
-          var dsq=Math.pow(cx[j]-randx,2)+Math.pow(cy[j]-randy,2); // Distance between centers squared
-          var rsumsq=Math.pow(randr+r[j],2); // Sum of the two radii squared
+          var dsq=Math.pow(props[j].cx-randx,2)+Math.pow(props[j].cy-randy,2); // Distance between centers squared
+          var rsumsq=Math.pow(randr+props[j].r,2); // Sum of the two radii squared
           if (dsq<rsumsq){
             overlap=true;
             break;
           }
           j++;
         }
-        // If there is no overlap,  add the new circle
+        // If there is no overlap, add the new circle
         if (!overlap){
-          r[i]=randr;
-          cx[i]=randx;
-          cy[i]=randy;
+          props[i]={
+            r:randr,
+            cx:randx,
+            cy:randy
+          };
           i++;
         }
       }
       // Create SVG
-      var center=d3.select("body").append("center"); // Create <center> tag for the svg
-      center.attr("id","center1"); // Create id in order to remove the tag when changing the # of circles
-      var svg=d3.select("center").append("svg"); // Creates the tab SVG and references it as "svg"
-      svg.attr("id","svg1")
-          .attr("width",w)
+      var svg = d3.select('svg');
+      svg.attr("width",w)
           .attr("height",h); // Sets the width and height to w and h respectively
+          // First deal with existing 'circle' tags
           var circles = svg.selectAll("circle")
-          .data(cx)
-          .enter()
-          .append("circle"); // Creates the circles along the dataset and references them as "circles"
-          circles.attr(
-            "cx",function(d,i){
-              return(cx[i]);
-            })
-            .attr(
-              "cy",function(d,i){
-                return(cy[i]);
-              })
-              .attr(
-                "r",function(d,i){
-                  return(r[i]);
-              });
+          .data(props);
+          assignCircleProps(circles);
+          // Now creating missing circles (if needed)
+          assignCircleProps(
+            circles.enter()
+            .append("circle")
+          );
+          // Removing unnecessary circles
+          circles.exit()
+          .remove();
     }
   </script>
 </head>
 
 <body>
+  <center>
+    <svg/> <!-- Equivalent to <svg> </svg> -->
+  </center>
   <center>
     <button onclick="changeCircleNumber();" style="font-size:30px"> Change the number of bubbles </button>
   </center>
