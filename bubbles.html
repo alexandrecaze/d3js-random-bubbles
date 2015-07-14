@@ -5,13 +5,10 @@
   <title>Random Bubbles</title>
   <script src="./d3.min.js"> // Loading d3.js </script>
   <script>
-    // Function that changes the number of circles
-    function changeCircleNumber() {
-      var Nc = prompt("Enter a new number of circles")
-      drawCircles(Nc);
-    }
+
+    // Assigns the properties to the circles in the SVG
     function assignCircleProps(ref){
-      ref.attr(
+      ref.transition().attr(
         "cx",function(d,i){
           return(d.cx);
         })
@@ -19,12 +16,12 @@
           "cy",function(d,i){
             return(d.cy);
           })
-          .attr(
+        .transition().attr(
             "r",function(d,i){
               return(d.r);
           });
     }
-    // Function that  draws the circles
+    // Draws the circles
     function drawCircles(Nc){
       // Draw non-overlapping, randomly located circles with random sizes
       w=500; // Width
@@ -61,7 +58,7 @@
           i++;
         }
       }
-      // Create SVG
+      // Updates SVG
       var svg = d3.select('svg');
       svg.attr("width",w)
           .attr("height",h); // Sets the width and height to w and h respectively
@@ -78,6 +75,7 @@
           circles.exit()
           .remove();
     }
+
   </script>
 </head>
 
@@ -86,10 +84,20 @@
     <svg/> <!-- Equivalent to <svg> </svg> -->
   </center>
   <center>
-    <button onclick="changeCircleNumber();" style="font-size:30px"> Change the number of bubbles </button>
+    <!-- Slider to change the # of bubbles -->
+    <p style="font-size:20px"> Change bubble # </p>
+    <input type="range" min="1" max="10000" value="5">
   </center>
   <script>
   drawCircles(25); // Call drawCircles for an initial value of 25 circles
+
+  // Deals with the slider
+  var slider = d3.select('input');
+  slider.on('change', function (caca,ev) {
+    drawCircles(d3.event.target.value);
+  //  (drawCircles(val));
+  });
+
   </script>
 </body>
 
