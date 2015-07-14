@@ -4,12 +4,10 @@
 <head>
   <title>Random Bubbles</title>
   <script src="./d3.min.js"> // Loading d3.js </script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>
-    // Function that changes the number of circles
-    function changeCircleNumber() {
-      var Nc = prompt("Enter a new number of circles")
-      drawCircles(Nc);
-    }
+
+    // Assigns the properties to the circles in the SVG
     function assignCircleProps(ref){
       ref.attr(
         "cx",function(d,i){
@@ -24,7 +22,7 @@
               return(d.r);
           });
     }
-    // Function that  draws the circles
+    // Draws the circles
     function drawCircles(Nc){
       // Draw non-overlapping, randomly located circles with random sizes
       w=500; // Width
@@ -86,10 +84,23 @@
     <svg/> <!-- Equivalent to <svg> </svg> -->
   </center>
   <center>
-    <button onclick="changeCircleNumber();" style="font-size:30px"> Change the number of bubbles </button>
+    <!-- Slider to change the # of bubbles -->
+    <p style="font-size:20px"> Change bubble # </p>
+    <input type="range" min="1" max="10000" value="5">
   </center>
   <script>
   drawCircles(25); // Call drawCircles for an initial value of 25 circles
+
+  // Deals with the slider
+  var $slider = $('input[type=range]');
+  $slider.on('change', function () {
+      val = $(this).val();
+      $(window).trigger('slide', val);
+  });
+  $(window).on('slide', function () {
+      (drawCircles(val));
+  });
+
   </script>
 </body>
 
