@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>My thesis in bubbles using d3.js</title>
+        <script type="text/javascript" src="./d3.min.js"></script>
+
+        <!-- Defining a class "bar" for histograms -->
+        <style type="text/css">
+            div.bar{
+                display:inline-block;
+                        width: 40px;
+                        height: 75px;
+                        background-color: teal;
+                        margin-right: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            // Non-overlapping, randomly located circles with random sizes
+            w=500; // Width
+            h=500;  // Height
+            f=0.4; // Approximate filling fraction
+            Nc=100; // Number of circles
+            avr=Math.sqrt(f*w*h/(3*Nc)); // Average radius for a filling fraction of 10%
+            var r=[]; // Array of radii
+            var cx=[]; // Array of x-coord for circle centers
+            var cy=[]; // Array of y-coord
+
+            // Loop on the circles
+            var i=0;
+            while (i<Nc){
+              // Random choice of a radius
+              var randr = Math.random()*avr;
+              // Random choice of x and y coordinates for the center
+              var randx = randr+Math.random()*(w-2*randr);
+              var randy = randr+Math.random()*(h-2*randr);
+              // Check if this choice overlaps with already chosen circles
+              var j=0;
+              var overlap=false;
+              while (j<i){
+                var dsq=Math.pow(cx[j]-randx,2)+Math.pow(cy[j]-randy,2); // Distance between centers squared
+                var rsumsq=Math.pow(randr+r[j],2); // Sum of the two radii squared
+                if (dsq<rsumsq){
+                  overlap=true;
+                }
+                j++;
+              }
+
+              // If there is no overlap, we add the new circle
+              if (!overlap){
+                r[i]=randr;
+                cx[i]=randx;
+                cy[i]=randy;
+                i++;
+              }
+            }
+
+            // Creating SVG
+            var svg=d3.select("body").append("svg"); // Creates the tab SVG and references it as "svg"
+            svg.attr("width",w)
+                .attr("height",h); // Sets the width and height to w and h respectively
+                var circles = svg.selectAll("circle")
+                .data(cx)
+                .enter()
+                .append("circle"); // Creates the circles along the dataset and references them as "circles"
+            circles.attr(
+                "cx",function(d,i){
+                    return(cx[i]);
+                })
+                .attr(
+                "cy",function(d,i){
+                    return(cy[i]);
+                })
+                .attr(
+                "r",function(d,i){
+                    return(r[i]);
+                });
+
+        </script>
+
+    </body>
+</html>
