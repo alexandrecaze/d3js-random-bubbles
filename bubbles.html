@@ -4,7 +4,6 @@
 <head>
   <title>Random Bubbles</title>
   <script src="./d3.min.js"> // Loading d3.js </script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script>
 
     // Assigns the properties to the circles in the SVG
@@ -92,13 +91,10 @@
   drawCircles(25); // Call drawCircles for an initial value of 25 circles
 
   // Deals with the slider
-  var $slider = $('input[type=range]');
-  $slider.on('change', function () {
-      val = $(this).val();
-      $(window).trigger('slide', val);
-  });
-  $(window).on('slide', function () {
-      (drawCircles(val));
+  var slider = d3.select('input');
+  slider.on('change', function (caca,ev) {
+    drawCircles(d3.event.target.value);
+  //  (drawCircles(val));
   });
 
   </script>
