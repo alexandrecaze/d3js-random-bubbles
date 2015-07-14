@@ -8,7 +8,7 @@
 
     // Assigns the properties to the circles in the SVG
     function assignCircleProps(ref){
-      ref.attr(
+      ref.transition().attr(
         "cx",function(d,i){
           return(d.cx);
         })
@@ -16,7 +16,7 @@
           "cy",function(d,i){
             return(d.cy);
           })
-          .attr(
+        .transition().attr(
             "r",function(d,i){
               return(d.r);
           });
@@ -58,7 +58,7 @@
           i++;
         }
       }
-      // Create SVG
+      // Updates SVG
       var svg = d3.select('svg');
       svg.attr("width",w)
           .attr("height",h); // Sets the width and height to w and h respectively
@@ -75,6 +75,7 @@
           circles.exit()
           .remove();
     }
+
   </script>
 </head>
 
